@@ -20,26 +20,14 @@ public class FeignClientResponseInterceptor implements ResponseInterceptor {
         if (request.body() != null) {
             requestBody = new String(request.body().clone());
         }
-
-        if (response.body() == null) {
-            log.info("\nRequest:\n{} {}\nBody: {}\nResponse:\nCode: {}\nHeaders: {}",
-                    request.httpMethod().toString(),
-                    request.url(),
-                    requestBody,
-                    response.status(),
-                    response.headers()
-            );
-
-        } else {
-            log.info("\nRequest:\n{} {}\nBody: {}\nResponse:\nCode: {}\nHeaders: {}\nBody: {}",
-                    request.httpMethod().toString(),
-                    request.url(),
-                    requestBody,
-                    response.status(),
-                    response.headers(),
-                    response.body().length()
-            );
-        }
+        log.info("\nRequest:\n{} {}\nBody: {}\nResponse:\nCode: {}\nHeaders: {}\nBody: {}",
+                request.httpMethod().toString(),
+                request.url(),
+                requestBody,
+                response.status(),
+                response.headers(),
+                response.body().length()
+        );
         return chain.next(invocationContext);
     }
 }
