@@ -1,6 +1,7 @@
-package com.example.feign.integration;
+package com.example.feign.integration.clients;
 
 import com.example.feign.dto.GitHubUser;
+import com.example.feign.dto.GitHubRepo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 

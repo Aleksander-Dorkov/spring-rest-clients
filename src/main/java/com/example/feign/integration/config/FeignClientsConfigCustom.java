@@ -1,5 +1,8 @@
-package com.example.feign.integration;
+package com.example.feign.integration.config;
 
+import com.example.feign.integration.CustomInterceptor;
+import com.example.feign.integration.clients.ApiClient;
+import com.example.feign.integration.clients.GitHubClient;
 import feign.Contract;
 import feign.Feign;
 import feign.Logger;
@@ -65,7 +68,7 @@ public class FeignClientsConfigCustom {
 
         @Override
         protected Response logAndRebufferResponse(String configKey, Level logLevel, Response response, long elapsedTime) throws IOException {
-            String methodInfo = configKey.substring(0, configKey.indexOf("(")).replace("#", "-");
+            String methodInfo = configKey.substring(0, configKey.indexOf("(")).replace("#", ".").concat("()");
             byte[] bytes = null;
             String requestBody = EMPTY_BODY;
             String responseBody = EMPTY_BODY;
