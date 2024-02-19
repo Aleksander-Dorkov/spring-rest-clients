@@ -11,6 +11,6 @@ public class Api {
 
     @PostMapping("/users")
     public ResponseEntity<ApplicationUser> post(@RequestBody ApplicationUser applicationUser) {
-        return ResponseEntity.status(200).body(applicationUser);
+        return ResponseEntity.status(200).body(new ApplicationUser("response", 100));
     }
 }

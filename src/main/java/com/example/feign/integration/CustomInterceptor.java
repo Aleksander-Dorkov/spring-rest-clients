@@ -5,11 +5,10 @@ import feign.Request;
 import feign.Response;
 import feign.ResponseInterceptor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Configuration;
 
 @Slf4j
-@Configuration
-public class FeignClientResponseInterceptor implements ResponseInterceptor {
+public class CustomInterceptor implements ResponseInterceptor {
+
 
     @Override
     public Object intercept(InvocationContext invocationContext, Chain chain) throws Exception {
@@ -20,14 +19,15 @@ public class FeignClientResponseInterceptor implements ResponseInterceptor {
         if (request.body() != null) {
             requestBody = new String(request.body().clone());
         }
-        log.info("\nRequest:\n{} {}\nBody: {}\nResponse:\nCode: {}\nHeaders: {}\nBody: {}",
-                request.httpMethod().toString(),
-                request.url(),
-                requestBody,
-                response.status(),
-                response.headers(),
-                response.body().length()
-        );
+//        log.info("\nRequest:\n{} {}\nHeaders: {}\nBody: {}\nResponse:\nCode: {}\nHeaders: {}\nBody: {}",
+//                request.httpMethod().toString(),
+//                request.url(),
+//                request.headers(),
+//                requestBody,
+//                response.status(),
+//                response.headers(),
+//                response.body().length()
+//        );
         return chain.next(invocationContext);
     }
 }
