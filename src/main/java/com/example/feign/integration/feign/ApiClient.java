@@ -1,4 +1,4 @@
-package com.example.feign.integration.clients;
+package com.example.feign.integration.feign;
 
 import com.example.feign.dto.ApplicationUser;
 import com.example.feign.dto.TestRecord;

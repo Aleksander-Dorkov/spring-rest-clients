@@ -1,8 +1,5 @@
-package com.example.feign.integration.config;
+package com.example.feign.integration.feign;
 
-import com.example.feign.integration.CustomInterceptor;
-import com.example.feign.integration.clients.ApiClient;
-import com.example.feign.integration.clients.GitHubClient;
 import feign.Contract;
 import feign.Feign;
 import feign.Logger;
@@ -53,8 +50,7 @@ public class FeignClientsConfigCustom {
                 .logLevel(Logger.Level.FULL)
                 .options(REUEST_OPTIONS)
                 .logger(REQUEST_LOGGER)
-                .errorDecoder(ERROR_DECODER)
-                .responseInterceptor(new CustomInterceptor());
+                .errorDecoder(ERROR_DECODER);
     }
 
     @Slf4j

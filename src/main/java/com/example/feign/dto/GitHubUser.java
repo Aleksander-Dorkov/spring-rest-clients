@@ -1,7 +1,10 @@
 package com.example.feign.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public record GitHubUser(
-        String login,
+        @JsonProperty("login")
+        String myLogin,
         long id,
         String nodeId,
         String avatarUrl,
