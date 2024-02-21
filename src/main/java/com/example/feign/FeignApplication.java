@@ -1,6 +1,8 @@
 package com.example.feign;
 
+import com.example.feign.dto.ApplicationUser;
 import com.example.feign.dto.GitHubUser;
+import com.example.feign.dto.TestRecord;
 import com.example.feign.integration.feign.ApiClient;
 import com.example.feign.integration.feign.GitHubClient;
 import com.example.feign.integration.retrofit.GitHubServiceRetrofit;
@@ -25,16 +27,15 @@ public class FeignApplication {
 //            var a2 = githubClient.getUser("Aleksander-Dorkov");
 //            var a3 = githubClient.getUserRepos("Aleksander-Dorkov");
 //            var a4 = apiClient.testRecordWithCustomMapping(new TestRecord("11", "22"));
+//            var resp = gitHubServiceRetrofit.getUser("Aleksander-Dorkov").execute();
 //            System.out.println("\n\not koda \n" + a1);
 //            System.out.println(a2);
 //            System.out.println(a3);
 //            System.out.println(a4);
+//            System.out.println(resp.body());
         } catch (Exception e) {
             System.out.println(e);
         }
 
-//
-        Response<GitHubUser> resp = gitHubServiceRetrofit.getUser("Aleksander-Dorkov").execute();
-        System.out.println(resp.body());
     }
 }
