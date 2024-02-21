@@ -1,11 +1,13 @@
 package com.example.feign;
 
+import com.example.feign.dto.GitHubUser;
 import com.example.feign.integration.feign.ApiClient;
 import com.example.feign.integration.feign.GitHubClient;
 import com.example.feign.integration.retrofit.GitHubServiceRetrofit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import retrofit2.Response;
 
 import java.io.IOException;
 
@@ -32,7 +34,7 @@ public class FeignApplication {
         }
 
 //
-//        Response<GitHubUser> resp = gitHubServiceRetrofit.getUser("Aleksander-Dorkov").execute();
-//        System.out.println(resp.body());
+        Response<GitHubUser> resp = gitHubServiceRetrofit.getUser("Aleksander-Dorkov").execute();
+        System.out.println(resp.body());
     }
 }

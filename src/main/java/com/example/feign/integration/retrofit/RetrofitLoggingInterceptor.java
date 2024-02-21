@@ -8,6 +8,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StreamUtils;
 import retrofit2.Invocation;
 
@@ -17,17 +18,18 @@ import java.lang.reflect.Method;
 import java.util.zip.GZIPInputStream;
 
 @Slf4j
-public class CustomInterceptor implements Interceptor {
+@Component
+public class RetrofitLoggingInterceptor implements Interceptor {
 
     @NotNull
     @Override
     public Response intercept(@NotNull Chain chain) throws IOException {
         Request request = chain.request();
-        Response response = chain.proceed(request);
-        return cloneResponse(response);
+        Response response = chain.proceed(request); // send the request to the endpoint
+        return cloneResponseAndLog(response);
     }
 
-    private Response cloneResponse(Response response) throws IOException {
+    private Response cloneResponseAndLog(Response response) throws IOException {
         Response.Builder clonedResponse = response.newBuilder()
                 .request(response.request())
                 .code(response.code())
@@ -36,10 +38,8 @@ public class CustomInterceptor implements Interceptor {
                 .handshake(response.handshake())
                 .protocol(response.protocol());
 
-        if (response.body() == null) {
-            return clonedResponse.build();
-        }
         byte[] bytes = bodyToByteArray(response);
+        ResponseBody clonedBody = ResponseBody.create(bytes, getMediaType(response));
 
         log.info("\n{}\n----> {} {}\nHeaders: {}\nBody: {}\n<---- Code: {}\nHeaders: {}\nBody: {}",
                 getClassAndMethod(response),
@@ -49,11 +49,7 @@ public class CustomInterceptor implements Interceptor {
                 response.request().body(),
                 response.code() + "",
                 response.headers().toMultimap(),
-                new String(bytes)
-        );
-
-        MediaType mediaType = response.body().contentType() == null ? MediaType.parse("application/json; charset=utf-8") : response.body().contentType();
-        ResponseBody clonedBody = ResponseBody.create(bytes, mediaType);
+                new String(bytes));
 
         return clonedResponse.body(clonedBody).build();
     }
@@ -67,7 +63,17 @@ public class CustomInterceptor implements Interceptor {
         return "%s.%s()".formatted(method.getDeclaringClass().getSimpleName(), method.getName());
     }
 
+    private MediaType getMediaType(Response response) {
+        if (response.body() == null || response.body().contentType() == null) {
+            return null;
+        }
+        return response.body().contentType();
+    }
+
     private byte[] bodyToByteArray(Response response) throws IOException {
+        if (response.body() == null) {
+            return new byte[] {};
+        }
         InputStream inputStream;
         String encoding = response.header("Content-Encoding");
         if (encoding != null && encoding.equalsIgnoreCase("gzip")) {

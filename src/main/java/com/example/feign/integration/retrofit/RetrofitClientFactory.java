@@ -2,6 +2,7 @@ package com.example.feign.integration.retrofit;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import okhttp3.OkHttpClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +10,12 @@ import retrofit2.Retrofit;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
 @Configuration
+@RequiredArgsConstructor
 public class RetrofitClientFactory {
+
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    private final RetrofitLoggingInterceptor loggingInterceptor;
 
     @Bean
     public GitHubServiceRetrofit gitHubService() {
@@ -17,14 +23,12 @@ public class RetrofitClientFactory {
     }
 
     public <T> T build(String url, Class<T> clazz) {
-        ObjectMapper objectMapper = new ObjectMapper()
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addNetworkInterceptor(new CustomInterceptor())
+                .addNetworkInterceptor(loggingInterceptor)
                 .build();
         Retrofit build = new Retrofit.Builder()
                 .baseUrl(url)
-                .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+                .addConverterFactory(JacksonConverterFactory.create(OBJECT_MAPPER))
                 .client(httpClient)
                 .build();
         return build.create(clazz);
