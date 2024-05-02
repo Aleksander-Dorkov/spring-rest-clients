@@ -1,4 +1,20 @@
 spring:
   docker:
     compose:
-      enabled: false
+      enabled: true
+      file: compose.yaml
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: 1234
+    url: jdbc:postgresql://localhost:5432/university
+  flyway:
+    baseline-on-migrate: true
+    create-schemas: true
+    schemas: public
+    locations: classpath:/migrations
+    table: flyway_migrations
+logging:
+  level:
+    org.springframework.jdbc.core: debug
+    root: info

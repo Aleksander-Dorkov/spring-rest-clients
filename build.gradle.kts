@@ -1,3 +1,5 @@
+import java.io.StringWriter;
+
 plugins {
     java
     id("org.springframework.boot") version "3.2.2"
@@ -29,11 +31,14 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     annotationProcessor("org.projectlombok:lombok")
+    implementation("org.flywaydb:flyway-core")
+    runtimeOnly("org.postgresql:postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-//	other
+    //other
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
-
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.15.3")
+    implementation("org.springframework.boot:spring-boot-starter-jooq")
 
 }
 
@@ -44,5 +49,7 @@ dependencyManagement {
 }
 
 tasks.withType<Test> {
+    val a = StringWriter();
+    a.close();
     useJUnitPlatform()
 }

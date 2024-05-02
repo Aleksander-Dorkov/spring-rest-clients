@@ -1,27 +1,30 @@
 package com.example.feign;
 
-import com.example.feign.dto.ApplicationUser;
-import com.example.feign.dto.GitHubUser;
-import com.example.feign.dto.TestRecord;
 import com.example.feign.integration.feign.ApiClient;
 import com.example.feign.integration.feign.GitHubClient;
+import com.example.feign.integration.restclient.soap.SoapRequest;
+import com.example.feign.integration.restclient.soap.SoapResponse;
 import com.example.feign.integration.retrofit.GitHubServiceRetrofit;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import retrofit2.Response;
+import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
 
+@Slf4j
 @EnableFeignClients
 @SpringBootApplication
 public class FeignApplication {
 
     public static void main(String[] args) throws IOException {
-        var a = SpringApplication.run(FeignApplication.class, args);
-        ApiClient apiClient = a.getBean(ApiClient.class);
-        GitHubClient githubClient = a.getBean(GitHubClient.class);
-        GitHubServiceRetrofit gitHubServiceRetrofit = a.getBean(GitHubServiceRetrofit.class);
+        var context = SpringApplication.run(FeignApplication.class, args);
+        ApiClient apiClient = context.getBean(ApiClient.class);
+        GitHubClient githubClient = context.getBean(GitHubClient.class);
+        GitHubServiceRetrofit gitHubServiceRetrofit = context.getBean(GitHubServiceRetrofit.class);
+        RestClient githubRestClient = (RestClient) context.getBean("github_rest_client");
+        RestClient soapRestClient = (RestClient) context.getBean("soap_client");
         try {
 //            var a1 = apiClient.getUserDetails(new ApplicationUser("aa", 12));
 //            var a2 = githubClient.getUser("Aleksander-Dorkov");
@@ -37,5 +40,19 @@ public class FeignApplication {
             System.out.println(e);
         }
 
+//        GitHubUser response = githubRestClient.get()
+//                .uri("/users/{username}?aa={first}&bb={second}", "Aleksander-Dorkov", "222", "1111")
+//                .retrieve()
+//                .body(GitHubUser.class);
+//        System.out.println(response);
+        var numberToWords = new SoapRequest.NumberToWords(500);
+        var body2 = new SoapRequest.SoapBody(numberToWords);
+        SoapRequest soapRequest = new SoapRequest(body2);
+
+        SoapResponse result = soapRestClient.post()
+                .body(soapRequest)
+                .retrieve()
+                .body(SoapResponse.class);
+        System.out.println(result.getSoapBody().getNumberToWords().getResult());
     }
 }
